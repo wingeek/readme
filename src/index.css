@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-surface-dim: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-inverse-primary: #8ff5ff;
+  --color-tertiary-container: #f0eaff;
+  --color-error-dim: #ba1a1a;
+  --color-on-error-container: #410002;
+  --color-on-tertiary: #ffffff;
+  --color-surface-tint: #006a71;
+  --color-outline-variant: #c4c7c7;
+  --color-background: #fbfcfc;
+  --color-tertiary: #613bbd;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-tertiary-fixed-variant: #4920a5;
+  --color-on-secondary: #ffffff;
+  --color-surface-container-highest: #e1e3e3;
+  --color-secondary-container: #e0e3e3;
+  --color-on-surface-variant: #444748;
+  --color-on-secondary-fixed: #191c1d;
+  --color-tertiary-dim: #cbbeff;
+  --color-tertiary-fixed-dim: #cbbeff;
+  --color-outline: #747878;
+  --color-on-primary-container: #002022;
+  --color-on-error: #ffffff;
+  --color-surface-variant: #e1e3e3;
+  --color-on-secondary-fixed-variant: #444748;
+  --color-on-primary-fixed: #002022;
+  --color-on-primary: #ffffff;
+  --color-surface-container-low: #f5f3f3;
+  --color-primary-fixed: #8ff5ff;
+  --color-on-surface: #191c1d;
+  --color-error-container: #ffdad6;
+  --color-surface-bright: #fbfcfc;
+  --color-primary: #006a71;
+  --color-error: #ba1a1a;
+  --color-surface-container: #f0f0f0;
+  --color-on-primary-fixed-variant: #004f55;
+  --color-on-secondary-container: #191c1d;
+  --color-surface-container-high: #ebe9e9;
+  --color-on-tertiary-container: #1d0061;
+  --color-on-background: #191c1d;
+  --color-inverse-surface: #2e3131;
+  --color-secondary-fixed-dim: #bfc8ca;
+  --color-primary-fixed-dim: #00deec;
+  --color-tertiary-fixed: #e7deff;
+  --color-primary-dim: #00deec;
+  --color-secondary-fixed: #dae4e6;
+  --color-secondary-dim: #bfc8ca;
+  --color-secondary: #5c6264;
+  --color-on-tertiary-fixed: #1d0061;
+  --color-primary-container: #97f3ff;
+  --color-inverse-on-surface: #eff1f1;
+
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-body: "Manrope", sans-serif;
+  --font-label: "Space Grotesk", sans-serif;
+  --font-mono: "Space Grotesk", monospace;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.selection-glow::selection {
+  background: rgba(0, 106, 113, 0.1);
+  color: #006a71;
+}
