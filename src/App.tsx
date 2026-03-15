@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Terminal,
   Settings,
@@ -17,20 +17,56 @@ import {
   Search,
   Info,
   Mic,
-  Paperclip
+  Paperclip,
+  Send,
+  Loader2,
+  User,
+  Bot
 } from 'lucide-react';
+import { useFiles } from './hooks/useFiles';
+import { useChat } from './hooks/useChat';
+import { MarkdownRenderer } from './components/MarkdownRenderer';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('IDENTITY.md');
+  const [activeTab, setActiveTab] = useState('IDENTITY');
+  const [inputValue, setInputValue] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { files, fileContent, loading: filesLoading, loadFile } = useFiles();
+  const { messages, isLoading, sendMessage } = useChat();
+
+  // Load file content when tab changes
+  useEffect(() => {
+    loadFile(activeTab);
+  }, [activeTab, loadFile]);
+
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleSend = () => {
+    if (inputValue.trim()) {
+      sendMessage(inputValue);
+      setInputValue('');
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
   const navItems = [
-    { id: 'IDENTITY.md', title: 'IDENTITY.md', subtitle: 'Occupation', icon: Fingerprint, activeColor: 'text-primary', activeBg: 'bg-primary/5', activeBorder: 'border-primary' },
-    { id: 'SOUL.md', title: 'SOUL.md', subtitle: 'Personality', icon: Brain, activeColor: 'text-primary', activeBg: 'bg-surface-container-highest/50', activeBorder: 'border-outline-variant' },
-    { id: 'USER.md', title: 'USER.md', subtitle: 'Clients', icon: Users, activeColor: 'text-primary', activeBg: 'bg-surface-container-highest/50', activeBorder: 'border-outline-variant' },
-    { id: 'TOOLS.md', title: 'TOOLS.md', subtitle: 'Tools', icon: Wrench, activeColor: 'text-primary', activeBg: 'bg-surface-container-highest/50', activeBorder: 'border-outline-variant' },
-    { id: 'MEMORY.md', title: 'MEMORY.md', subtitle: 'Memory', icon: Database, activeColor: 'text-primary', activeBg: 'bg-surface-container-highest/50', activeBorder: 'border-outline-variant' },
-    { id: 'HEARTBEAT.md', title: 'HEARTBEAT.md', subtitle: 'Rhythm', icon: Activity, activeColor: 'text-primary', activeBg: 'bg-surface-container-highest/50', activeBorder: 'border-outline-variant' },
-    { id: 'BOOTSTRAP.md', title: 'BOOTSTRAP.md', subtitle: 'Birth', icon: Rocket, activeColor: 'text-tertiary', activeBg: 'bg-tertiary/5', activeBorder: 'border-tertiary', isSpecial: true },
+    { id: 'IDENTITY', title: 'IDENTITY.md', subtitle: 'Occupation', icon: Fingerprint, activeColor: 'text-primary', activeBg: 'bg-primary/5', activeBorder: 'border-primary' },
+    { id: 'SOUL', title: 'SOUL.md', subtitle: 'Personality', icon: Brain, activeColor: 'text-primary', activeBg: 'bg-surface-container-highest/50', activeBorder: 'border-outline-variant' },
+    { id: 'USER', title: 'USER.md', subtitle: 'Clients', icon: Users, activeColor: 'text-primary', activeBg: 'bg-surface-container-highest/50', activeBorder: 'border-outline-variant' },
+    { id: 'TOOLS', title: 'TOOLS.md', subtitle: 'Tools', icon: Wrench, activeColor: 'text-primary', activeBg: 'bg-surface-container-highest/50', activeBorder: 'border-outline-variant' },
+    { id: 'MEMORY', title: 'MEMORY.md', subtitle: 'Memory', icon: Database, activeColor: 'text-primary', activeBg: 'bg-surface-container-highest/50', activeBorder: 'border-outline-variant' },
+    { id: 'HEARTBEAT', title: 'HEARTBEAT.md', subtitle: 'Rhythm', icon: Activity, activeColor: 'text-primary', activeBg: 'bg-surface-container-highest/50', activeBorder: 'border-outline-variant' },
+    { id: 'BOOTSTRAP', title: 'BOOTSTRAP.md', subtitle: 'Birth', icon: Rocket, activeColor: 'text-tertiary', activeBg: 'bg-tertiary/5', activeBorder: 'border-tertiary', isSpecial: true },
   ];
 
   return (
@@ -95,106 +131,81 @@ export default function App() {
           </div>
         </nav>
 
-        {/* Main Content */}
-        <main className="flex-1 bg-white flex flex-col relative selection-glow min-w-0">
+        {/* Main Content - Split View */}
+        <main className="flex-1 flex flex-col relative selection-glow min-w-0">
           {/* Editor Header */}
           <div className="h-10 border-b border-outline-variant/30 flex items-center justify-between px-8 bg-surface-container-lowest shrink-0">
             <div className="flex items-center gap-2">
               <span className="font-label text-[10px] text-primary font-bold tracking-widest">
-                ~/DRIVE/{activeTab}
+                ~/DRIVE/{activeTab}.md
               </span>
               <span className="text-[9px] text-outline px-1.5 py-0.5 border border-outline-variant bg-surface-container-low font-bold">
                 READ_ONLY
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <span className="font-label text-[9px] text-outline font-bold">42:1</span>
+              <span className="font-label text-[9px] text-outline font-bold">{filesLoading ? '...' : `${fileContent.split('\n').length}:1`}</span>
               <Search className="w-4 h-4 text-outline cursor-pointer hover:text-primary" />
             </div>
           </div>
 
-          {/* Editor Content */}
-          <div className="flex-1 overflow-y-auto no-scrollbar font-mono p-12 lg:p-20">
-            <article className="max-w-3xl mx-auto leading-relaxed">
-              <h1 className="text-on-surface text-3xl font-bold mb-10 flex items-baseline gap-4 font-headline">
-                <span className="text-primary/30 text-2xl">#</span> Identity Core // Protocol
-              </h1>
+          {/* Split Content Area */}
+          <div className="flex-1 flex overflow-hidden">
+            {/* File Preview (left side) */}
+            <div className="w-1/2 border-r border-outline-variant/30 overflow-y-auto p-8 bg-white">
+              {filesLoading ? (
+                <div className="text-sm text-on-surface-variant">Loading...</div>
+              ) : (
+                <MarkdownRenderer content={fileContent || 'No content'} className="text-sm" />
+              )}
+            </div>
 
-              <section className="mb-14">
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-5 gap-2">
-                  <h2 className="text-primary text-lg font-bold font-headline">Lead Cyber-Organic Architect</h2>
-                  <span className="font-label text-[10px] text-outline uppercase tracking-widest bg-surface-container-low border border-outline-variant/30 px-2.5 py-1 font-bold">
-                    Class: Zenith-01
-                  </span>
-                </div>
-                <p className="text-on-surface-variant mb-6 text-sm font-body">
-                  Defining the boundaries between neural silicon and biological intent. Specializing in the deployment of advocacy protocols for high-value decentralized entities.
-                </p>
-                <ul className="space-y-4 text-sm text-on-surface/90 list-none font-body">
-                  <li className="flex gap-4">
-                    <span className="text-primary font-bold">[-]</span> Mediating complex cross-chain governance disputes via logic-injection.
-                  </li>
-                  <li className="flex gap-4">
-                    <span className="text-primary font-bold">[-]</span> Encoding ethical constraints into autonomous decision-making arrays.
-                  </li>
-                  <li className="flex gap-4">
-                    <span className="text-primary font-bold">[-]</span> Operating as the primary digital interface for the Obsidian Protocol.
-                  </li>
-                </ul>
-              </section>
-
-              <section className="mb-14">
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-5 gap-2">
-                  <h2 className="text-primary text-lg font-bold font-headline">Strategic Governance Liaison</h2>
-                  <span className="font-label text-[10px] text-outline uppercase tracking-widest bg-surface-container-low border border-outline-variant/30 px-2.5 py-1 font-bold">
-                    Class: Admin-5
-                  </span>
-                </div>
-                <p className="text-on-surface-variant mb-6 text-sm font-body">
-                  Architecting the bridge between algorithmic efficiency and human consensus. Deployment of multi-signature ethical frameworks.
-                </p>
-                <ul className="space-y-4 text-sm text-on-surface/90 list-none font-body">
-                  <li className="flex gap-4">
-                    <span className="text-primary font-bold">[-]</span> Auditing neural pathways for bias and logical fallacies.
-                  </li>
-                  <li className="flex gap-4">
-                    <span className="text-primary font-bold">[-]</span> Validating secure transmission between biological nodes and decentralized databases.
-                  </li>
-                  <li className="flex gap-4">
-                    <span className="text-primary font-bold">[-]</span> Oversight of the Aether Protocol synchronization cycle.
-                  </li>
-                </ul>
-              </section>
-
-              <footer className="mt-20 pt-10 border-t border-outline-variant/30">
-                <div className="p-8 bg-surface-container-low border border-outline-variant/30">
-                  <div className="flex items-center gap-2 mb-6">
-                    <Info className="text-primary w-4 h-4" />
-                    <span className="font-label text-[10px] uppercase tracking-[0.2em] text-primary font-bold">
-                      Metadata Extraction
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-12">
-                    <div>
-                      <p className="font-label text-[9px] text-outline mb-1.5 uppercase tracking-wider font-bold">
-                        Synchronization
-                      </p>
-                      <p className="text-2xl font-bold tracking-tighter text-on-surface font-headline">
-                        99.8% <span className="text-[11px] font-bold text-primary ml-1.5 px-1.5 py-0.5 bg-primary/10 align-middle">OPTIMAL</span>
-                      </p>
-                    </div>
-                    <div>
-                      <p className="font-label text-[9px] text-outline mb-1.5 uppercase tracking-wider font-bold">
-                        Trust Level
-                      </p>
-                      <p className="text-2xl font-bold tracking-tighter text-on-surface font-headline">
-                        ADMIN-5
-                      </p>
+            {/* Chat Area (right side) */}
+            <div className="w-1/2 flex flex-col bg-surface-container-lowest">
+              {/* Chat Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.length === 0 ? (
+                  <div className="flex items-center justify-center h-full text-on-surface-variant/50">
+                    <div className="text-center">
+                      <Bot className="w-12 h-12 mx-auto mb-4 text-primary/30" />
+                      <p className="text-sm">开始对话...</p>
                     </div>
                   </div>
-                </div>
-              </footer>
-            </article>
+                ) : (
+                  messages.map((msg, idx) => (
+                    <div
+                      key={idx}
+                      className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      {msg.role === 'assistant' && (
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                          <Bot className="w-4 h-4 text-primary" />
+                        </div>
+                      )}
+                      <div
+                        className={`max-w-[80%] px-4 py-2 rounded-lg text-sm ${
+                          msg.role === 'user'
+                            ? 'bg-primary text-white'
+                            : 'bg-surface-container-low text-on-surface'
+                        }`}
+                      >
+                        {msg.content ? (
+                          <MarkdownRenderer content={msg.content} />
+                        ) : (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        )}
+                      </div>
+                      {msg.role === 'user' && (
+                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+                          <User className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
           </div>
 
           {/* Aether Scrollbar Indicator */}
@@ -213,6 +224,10 @@ export default function App() {
               className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none text-xs font-body text-on-surface placeholder:text-outline/40 px-0"
               placeholder="Awaiting instruction..."
               type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isLoading}
             />
           </div>
           <div className="flex items-center gap-6 border-l border-outline-variant/30 pl-6">
@@ -220,7 +235,12 @@ export default function App() {
               <Mic className="text-outline w-5 h-5 cursor-pointer hover:text-primary transition-colors" />
               <Paperclip className="text-outline w-5 h-5 cursor-pointer hover:text-primary transition-colors" />
             </div>
-            <button className="bg-primary text-white font-label text-[10px] font-bold uppercase tracking-[0.2em] px-6 py-2.5 hover:bg-surface-tint transition-all shadow-sm cursor-pointer">
+            <button
+              onClick={handleSend}
+              disabled={isLoading || !inputValue.trim()}
+              className="bg-primary text-white font-label text-[10px] font-bold uppercase tracking-[0.2em] px-6 py-2.5 hover:bg-surface-tint transition-all shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               Execute
             </button>
           </div>

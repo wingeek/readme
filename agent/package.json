@@ -1,0 +1,13 @@
+{
+  "name": "agent-resume-server",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch index.ts",
+    "start": "bun run index.ts"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "hono": "^4.0.0",
+    "zhipuai": "^1.0.0"
+  }
+}

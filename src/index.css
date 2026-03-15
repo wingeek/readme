@@ -80,3 +80,117 @@
   background: rgba(0, 106, 113, 0.1);
   color: #006a71;
 }
+
+/* Markdown 渲染样式 */
+.markdown-content {
+  line-height: 1.6;
+  color: var(--color-on-surface-variant);
+}
+
+.markdown-content h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--color-on-surface);
+  font-family: var(--font-headline);
+}
+
+.markdown-content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-primary);
+  font-family: var(--font-headline);
+}
+
+.markdown-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-on-surface);
+}
+
+.markdown-content p {
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content ul, .markdown-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content code {
+  background: var(--color-surface-container);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-family: var(--font-mono);
+}
+
+.markdown-content pre {
+  background: var(--color-surface-container);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid var(--color-primary);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 0.75rem;
+  color: var(--color-outline);
+}
+
+.markdown-content strong {
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.markdown-content a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid var(--color-outline-variant);
+  margin: 1.5rem 0;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content th, .markdown-content td {
+  border: 1px solid var(--color-outline-variant);
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.markdown-content th {
+  background: var(--color-surface-container-low);
+  font-weight: 600;
+}
